@@ -1,2 +1,2 @@
 # ytdlui
-Youtube DL UI in python3/tkinter
+A simple French Youtube Downloader User Interface in python3/tkinter...
