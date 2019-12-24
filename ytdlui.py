@@ -20,6 +20,7 @@ class DLThread(th.Thread):
                 self.ui = ui
                 self.step = 0
                 self.steps = ['-', '\\', '|', '/']
+                self.list_dl = {}
 
             def debug(self, msg):
                 print("DBG %s" % len(msg))
@@ -42,18 +43,28 @@ class DLThread(th.Thread):
 
             def prog_hook(self, d):
                 print(repr(d))
+                fn = d['filename']
+                if d['filename'] not in self.list_dl:
+                    self.list_dl[fn] = False
                 if d['status'] == 'downloading' and self.ui.progress is None:
                     self.ui.extract_ui()
+                    for fn in self.list_dl.keys():
+                        txt = "Télécharger: %s" % fn
+                        if self.list_dl[fn]:
+                            txt += " OK!"
+                        txt += "\n"
+                        self.ui.log.insert(tk.INSERT, txt)
+                        self.ui.log.see(tk.INSERT)
                 if d['status'] == 'downloading' and self.ui.progress is not None:
                     print(repr(d))
                     m = re.search(r'(\d+(\.\d+))%', d['_percent_str'])
                     perc = float(m.groups()[0])
                     print("PERCENT %s" % perc)
-                    fn = d['filename']
                     self.ui.progress['value'] = perc
                     self.ui.btn.configure(text="Extraction en cours %s" % self.steps[self.step])
                     self.step = (self.step + 1) % len(self.steps)
                 elif d['status'] == 'finished':
+                    self.list_dl[fn] = True    
                     self.ui.finish()
 
         log = MyLogger(self.ui)
