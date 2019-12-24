@@ -8,6 +8,7 @@ import threading as th
 import subprocess as sp
 import re
 import youtube_dl as ytdl
+from urllib.parse import *
 
 class DLThread(th.Thread):
     def __init__(self, ui):
@@ -70,8 +71,12 @@ class DLThread(th.Thread):
         log = MyLogger(self.ui)
         # TODO: urllib.urlparse
         opts = {'logger': log, 'progress_hooks': [log.prog_hook], 'nooverwrites': True}
+        url = self.ui.link_txt.get()
+        parts = urlparse(url)
+        qs = parse_qs(parts.query)
+        if 
         with ytdl.YoutubeDL(opts) as dl:
-            dl.download([self.ui.link_txt.get()])
+            dl.download([url])
 
 class UI:
     def __init__(self):
