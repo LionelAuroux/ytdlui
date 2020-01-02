@@ -69,14 +69,15 @@ class DLThread(th.Thread):
                     self.ui.finish()
 
         log = MyLogger(self.ui)
-        # TODO: urllib.urlparse
         opts = {'logger': log, 'progress_hooks': [log.prog_hook], 'nooverwrites': True}
         url = self.ui.link_txt.get()
         parts = urlparse(url)
+        urls = [url]
         qs = parse_qs(parts.query)
-        if 
+        if 'list' in qs:
+            pass
         with ytdl.YoutubeDL(opts) as dl:
-            dl.download([url])
+            dl.download(urls)
 
 class UI:
     def __init__(self):
